@@ -8,7 +8,6 @@ const fetch = require('node-fetch'); // Required for direct API calls to list mo
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,7 +17,6 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // 🔥 Generate Email with Gemini Pro
-// 🔥 Generate Email with Gemini Pro
 app.post('/api/generate-email', async (req, res) => {
     try {
         const { bulletPoints, subject } = req.body;
@@ -26,7 +24,7 @@ app.post('/api/generate-email', async (req, res) => {
             return res.status(400).json({ error: 'Bullet points and subject are required' });
         }
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); 
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
         const prompt = `Convert the following bullet points into a professional, well-structured email.
 
@@ -48,16 +46,12 @@ Instructions:
         });
 
         // --- IMPORTANT DEBUGGING AND ERROR HANDLING ---
-        // Log the full result from Gemini for inspection
         console.log('Full Gemini API Result:', JSON.stringify(result, null, 2));
 
-        // ⭐⭐⭐ THE FIX IS HERE ⭐⭐⭐
-        // The text content is under candidates[0].content.parts[0].text
-        if (!result.response || !result.response.candidates || result.response.candidates.length === 0 || 
-            !result.response.candidates[0].content || !result.response.candidates[0].content.parts || 
-            result.response.candidates[0].content.parts.length === 0) 
-        {
-            // Check for safety ratings if parts are empty (still good to have)
+        if (!result.response || !result.response.candidates || result.response.candidates.length === 0 ||
+            !result.response.candidates[0].content || !result.response.candidates[0].content.parts ||
+            result.response.candidates[0].content.parts.length === 0) {
+
             if (result.response && result.response.promptFeedback && result.response.promptFeedback.safetyRatings) {
                 const safetyIssues = result.response.promptFeedback.safetyRatings.map(sr => `${sr.category}: ${sr.probability}`).join(', ');
                 console.warn('Gemini response was blocked due to safety settings:', safetyIssues);
@@ -74,12 +68,11 @@ Instructions:
             }
         }
 
-        // ⭐⭐⭐ THIS IS THE LINE TO CORRECTLY EXTRACT TEXT ⭐⭐⭐
         const responseText = result.response.candidates[0].content.parts[0].text;
         res.json({ success: true, emailContent: responseText.trim() });
 
     } catch (error) {
-        console.error('Gemini email generation error:', error); 
+        console.error('Gemini email generation error:', error);
         res.status(500).json({
             error: 'Failed to generate email with Gemini',
             details: error.message
@@ -89,6 +82,22 @@ Instructions:
 
 
 // 📤 Send email via Nodemailer
+function getSMTPConfig(email) {
+    const domain = email.split('@')[1].toLowerCase();
+
+    if (domain.includes('gmail.com')) {
+        return { host: 'smtp.gmail.com', port: 587, secure: false };
+    }
+    if (domain.includes('outlook.com') || domain.includes('hotmail.com') || domain.includes('live.com')) {
+        return { host: 'smtp.office365.com', port: 587, secure: false };
+    }
+    if (domain.includes('rediffmail.com')) {
+        return { host: 'smtp.rediffmail.com', port: 587, secure: false };
+    }
+
+    throw new Error(`Unsupported email provider: ${domain}`);
+}
+
 app.post('/api/send-email', async (req, res) => {
     try {
         const { to, cc, bcc, subject, body, senderEmail, senderPassword } = req.body;
@@ -97,9 +106,12 @@ app.post('/api/send-email', async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields: to, subject, body, senderEmail, senderPassword' });
         }
 
-        // Create a new transporter for each request using the user's credentials
+        const { host, port, secure } = getSMTPConfig(senderEmail);
+
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host,
+            port,
+            secure,
             auth: {
                 user: senderEmail,
                 pass: senderPassword
@@ -111,22 +123,21 @@ app.post('/api/send-email', async (req, res) => {
         await transporter.verify();
 
         const mailOptions = {
-    from: senderEmail,
-    to,
-    subject,
-    html: `
-        ${body.replace(/\n/g, '<br>')}
-        <br><br>
-        <hr>
-        <p style="font-size: 0.9em; color: gray;">
-            Found this email cool? You can generate one for yourself too — just visit 
-            <a href="https://e-gennieai.up.railway.app/" target="_blank">
-                https://e-gennieai.up.railway.app
-            </a>.
-        </p>
-    `
-};
-
+            from: senderEmail,
+            to,
+            subject,
+            html: `
+                ${body.replace(/\n/g, '<br>')}
+                <br><br>
+                <hr>
+                <p style="font-size: 0.9em; color: gray;">
+                    Found this email helpful? Generate your own at 
+                    <a href="https://e-gennieai.up.railway.app/" target="_blank">
+                        https://e-gennieai.up.railway.app
+                    </a>
+                </p>
+            `
+        };
 
         if (cc && cc.trim()) mailOptions.cc = cc;
         if (bcc && bcc.trim()) mailOptions.bcc = bcc;
@@ -149,7 +160,7 @@ app.post('/api/send-email', async (req, res) => {
         } else if (error.code === 'ENOTFOUND') {
             errorMessage = 'SMTP server not found.';
         } else if (error.responseCode === 535) {
-            errorMessage = 'Invalid Gmail credentials.';
+            errorMessage = 'Invalid email credentials.';
         }
 
         res.status(500).json({ error: errorMessage, details: error.message });
@@ -161,11 +172,9 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'OK',
         timestamp: new Date().toISOString(),
-        ollamaUp: false // Set to false by default, as we're not checking it directly here.
-                        // You'd need a separate check for Ollama.
+        ollamaUp: false
     });
 });
-
 
 // Global error handler
 app.use((error, req, res, next) => {

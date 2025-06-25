@@ -180,8 +180,9 @@ function copyEmail() {
     const promoText = `
 
 ----------------------------
-Found this email cool? You can generate one for yourself too — just visit https://e-gennieai.up.railway.app/
-    `;
+Found this email helpful? Generate your own at https://e-gennieai.up.railway.app/
+`;
+
 
     const emailText = document.getElementById('emailPreview')?.innerText || '';
     const fullText = emailText + promoText;
