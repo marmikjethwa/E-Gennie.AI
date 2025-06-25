@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Email Composer</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+.modal {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999;
+}
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  width: 90%; max-width: 500px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+}
+.modal-content .close {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 24px; cursor: pointer;
+}
+</style>
 </head>
 <body>
     <div class="container">
@@ -106,6 +128,24 @@
             </button>
         </div>
     </div>
+    <div id="translateModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeTranslateModal()">&times;</span>
+    <h3>Select Language to Translate</h3>
+    <select id="targetLanguage">
+      <option value="hi">Hindi</option>
+      <option value="fr">French</option>
+      <option value="es">Spanish</option>
+      <option value="de">German</option>
+      <option value="gu">Gujarati</option>
+    </select>
+    <br><br>
+    <button class="btn" onclick="translateEmail()">Translate</button>
+    <div id="translatedOutput" style="margin-top: 20px;"></div>
+  </div>
+</div>
+
+
     <footer style="margin-top: 50px; padding: 20px; border-top: 1px solid #eee; text-align: center; font-family: Arial, sans-serif; font-size: 14px; color: #ffffff;">
         <p style="margin-bottom: 10px;">Crafted with &#10084; <span style="font-weight: bold; color: #ffffff;">Marmik S Jethwa</span></p>
         <div style="display: flex; justify-content: center; align-items: center; gap: 15px;">

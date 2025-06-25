@@ -2,7 +2,6 @@
         let config = {
             senderEmail: '',
             emailPassword: '',
-            geminiApiKey: ''
         };
 
         let generatedEmailContent = '';
@@ -219,6 +218,43 @@ Found this email helpful? Generate your own at https://e-gennieai.up.railway.app
         });
 }
 
+function openTranslateModal() {
+    document.getElementById('translateModal').style.display = 'flex';
+}
+
+function closeTranslateModal() {
+    document.getElementById('translateModal').style.display = 'none';
+    document.getElementById('translatedOutput').innerHTML = '';
+}
+
+async function translateEmail() {
+    const lang = document.getElementById('targetLanguage').value;
+    const text = generatedEmailContent;
+
+    try {
+        const response = await fetch("https://libretranslate.de/translate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                q: text,
+                source: "en",
+                target: lang,
+                format: "text"
+            })
+        });
+
+        const data = await response.json();
+        document.getElementById('translatedOutput').innerHTML = `
+            <h4>🌐 Translated Email:</h4>
+            <p style="text-align: left; margin-top: 10px;">${data.translatedText.replace(/\n/g, '<br>')}</p>
+        `;
+    } catch (err) {
+        console.error("Translation error:", err);
+        document.getElementById('translatedOutput').innerHTML = `<p style="color: red;">Failed to translate. Try again.</p>`;
+    }
+}
 
 
 
