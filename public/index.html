@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Email Composer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 E-Gennie.AI🤖</h1>
+            <p>Transform bullet points into professional emails with AI</p>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2>📝 Compose Email</h2>
+                
+                <div class="config-section">
+                    <h4>⚙️ Configuration Required</h4>
+                    <small>Make sure to set up your Gmail id and App Password (not account password) in the configuration section below before using send functionality.<br>For App Password go to <a href="https://myaccount.google.com/apppasswords">myaccount.google.com/apppasswords</a></small>
+                </div>
+
+                <form id="emailForm">
+                    <div class="form-group">
+                        <label for="to">To:</label>
+                        <input type="email" id="to" name="to" placeholder="recipient@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cc">CC:</label>
+                        <input type="email" id="cc" name="cc" placeholder="cc@example.com (optional)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bcc">BCC:</label>
+                        <input type="email" id="bcc" name="bcc" placeholder="bcc@example.com (optional)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject:</label>
+                        <input type="text" id="subject" name="subject" placeholder="Email subject" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bulletPoints">Bullet Points:</label>
+                        <textarea id="bulletPoints" name="bulletPoints" class="bullet-points" 
+                                placeholder="• First point about the topic&#10;• Second important point&#10;• Third key information&#10;• Conclusion or call to action" required></textarea>
+                    </div>
+
+                    <button type="button" class="btn" onclick="generateEmail()">
+                        🔄 Generate Email
+                    </button>
+                    <button type="button" class="btn btn-send" onclick="sendEmail()" disabled>
+                        📧 Send Email
+                    </button>
+                </form>
+            </div>
+
+            <div class="form-section">
+                <h2>👀 Email Preview</h2>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Generating professional email with AI...</p>
+                </div>
+
+                <div class="email-preview" id="emailPreview">
+                <p style="color: #6c757d; font-style: italic;">Click "Generate Email" to see the AI-generated email preview here.</p>
+            </div>
+            <div class="email-actions" id="emailActions" style="display: none; margin-top: 10px;">
+                <button class="btn" onclick="editEmail()">✏️ Edit</button>
+                <button class="btn" onclick="copyEmail()">📋 Copy</button>
+            </div>
+            <div class="email-editor" id="emailEditor" style="display: none; margin-top: 10px;">
+                <textarea id="editableEmail" class="bullet-points" style="min-height: 200px;"></textarea>
+                <div style="margin-top: 10px;">
+                    <button class="btn" onclick="saveEditedEmail()">✅ Save</button>
+                    <button class="btn" onclick="discardEdit()">❌ Discard</button>
+                </div>
+            </div>
+
+
+                <div class="status-message" id="statusMessage"></div>
+            </div>
+        </div>
+
+        <div class="form-section" style="margin: 30px; margin-top: 0;">
+            <h2>⚙️ Configuration</h2>
+            <p style="margin-bottom: 20px; color: #666;">Enter your credentials to enable email sending functionality:</p>
+            
+            <div class="form-group">
+                <label for="senderEmail">Your Email:</label>
+                <input type="email" id="senderEmail" placeholder="your-email@gmail.com">
+            </div>
+
+            <div class="form-group">
+                <label for="emailPassword">Email Password:</label>
+                <input type="password" id="emailPassword" placeholder="Your 16-characters app password (without space)">
+                <small style="color: #666;">It only works with Gmail account</small>
+            </div>
+
+            <button type="button" class="btn" onclick="saveConfig()">
+                💾 Save Configuration
+            </button>
+        </div>
+    </div>
+    <footer style="margin-top: 50px; padding: 20px; border-top: 1px solid #eee; text-align: center; font-family: Arial, sans-serif; font-size: 14px; color: #ffffff;">
+        <p style="margin-bottom: 10px;">Crafted with &#10084; <span style="font-weight: bold; color: #ffffff;">Marmik S Jethwa</span></p>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 15px;">
+            <a href="mailto:Marmikjethwa@gmail.com" style="text-decoration: none; color: inherit;">
+                <img src="https://img.icons8.com/ios-filled/24/000000/email.png" alt="Email" style="vertical-align: middle; margin-right: 5px; width: 24px; height: 24px;">
+                <span style="vertical-align: middle;">Marmikjethwa@gmail.com</span>
+            </a>
+            <a href="https://www.instagram.com/marmikjethwa" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit;">
+                <img src="https://img.icons8.com/ios-filled/24/000000/instagram-new--v1.png" alt="Instagram" style="vertical-align: middle; margin-right: 5px; width: 24px; height: 24px;">
+                <span style="vertical-align: middle;">marmikjethwa</span>
+            </a>
+            <a href="https://github.com/marmikjethwa" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit;">
+                <img src="https://img.icons8.com/ios-filled/24/000000/github.png" alt="GitHub" style="vertical-align: middle; margin-right: 5px; width: 24px; height: 24px;">
+                <span style="vertical-align: middle;">marmikjethwa</span>
+            </a>
+        </div>
+    <script src="script.js"></script>
+</body>
+</html>
