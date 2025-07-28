@@ -132,8 +132,8 @@ app.post('/api/send-email', async (req, res) => {
                 <hr>
                 <p style="font-size: 0.9em; color: gray;">
                     Found this email helpful? Generate your own at 
-                    <a href="https://e-gennieai.up.railway.app/" target="_blank">
-                        https://e-gennieai.up.railway.app
+                    <a href="https://e-gennie-ai.onrender.com/" target="_blank">
+                        https://e-gennie-ai.onrender.com/
                     </a>
                 </p>
             `
